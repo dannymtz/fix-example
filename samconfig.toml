@@ -1,0 +1,13 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "quickfix"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-lytdpa2qv7vz"
+s3_prefix = "quickfix"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+disable_rollback = true
+parameter_overrides = "ApplicationID=\"server\" ConnectionType=\"acceptor\" CustomImagePath=\"\" DebugLogging=\"false\" FIXClientCIDRs=\"10.10.0.0/20\" FIXServerDNSName=\"\" FIXServerPort=\"9877\" FIXVersion=\"4.2\" FailoverPrivateSubnetCIDR=\"10.10.6.0/23\" FailoverPublicSubnetCIDR=\"10.10.2.0/23\" HostedZoneID=\"\" KMSKeyARN=\"\" KafkaConnTLS=\"false\" LogRetentionInDays=\"30\" PrimaryPrivateSubnetCIDR=\"10.10.4.0/23\" PrimaryPublicSubnetCIDR=\"10.10.0.0/23\" S3LogsBucket=\"\" S3LogsBucketPrefix=\"hello\" SNSTopicArn=\"\" SenderCompID=\"server\" TargetCompID=\"client\" UserApplicationCIDRs=\"10.10.0.0/20\" VpcCIDR=\"10.10.0.0/20\""
+image_repositories = []
