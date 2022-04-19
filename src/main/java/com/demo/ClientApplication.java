@@ -15,9 +15,9 @@ public class ClientApplication extends ApplicationAdapter {
     private boolean seEjecutoOrdenCorrectamente = false;
     private  boolean estaLogueado = false;
 
-    private final NewOrderSingle newOrder;
     private final String usuario;
     private final String password;
+    private final NewOrderSingle newOrder;
 
     public ClientApplication(final NewOrderSingle newOrder, final String usuario, final String password) {
         this.newOrder = newOrder;
