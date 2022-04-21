@@ -9,9 +9,11 @@ import quickfix.Session;
 import quickfix.SessionID;
 import quickfix.SessionNotFound;
 import quickfix.UnsupportedMessageType;
+import quickfix.field.NoMDEntries;
 import quickfix.field.Password;
 import quickfix.field.SecurityType;
 import quickfix.field.Username;
+import quickfix.fix44.MarketDataIncrementalRefresh;
 import quickfix.fix44.MarketDataRequest;
 import quickfix.fix44.MarketDataSnapshotFullRefresh;
 import quickfix.fix44.Logon;
@@ -39,11 +41,23 @@ public class ClientMarketData extends ApplicationAdapter {
             if(esSecurityType(marketDataSnapshotFullRefresh)){
                 this.seEjecutoOrdenCorrectamente = true;
             }
+        } else if (message instanceof MarketDataIncrementalRefresh){
+            MarketDataIncrementalRefresh marketDataIncrementalRefresh = (MarketDataIncrementalRefresh) message;
+            if(esSecurityType(marketDataIncrementalRefresh)){
+                this.seEjecutoOrdenCorrectamente = true;
+            }
         }
     }
 
     private boolean esSecurityType(final MarketDataSnapshotFullRefresh marketDataSnapshotFullRefresh) throws FieldNotFound {
         return marketDataSnapshotFullRefresh.getSecurityType().getValue().equals(SecurityType.FOREIGN_EXCHANGE_CONTRACT);
+    }
+    private boolean esSecurityType(final MarketDataIncrementalRefresh marketDataIncrementalRefresh) throws FieldNotFound {
+        NoMDEntries noMDEntries = new NoMDEntries();
+        marketDataIncrementalRefresh.get(noMDEntries);
+        MarketDataSnapshotFullRefresh.NoMDEntries group = new MarketDataSnapshotFullRefresh.NoMDEntries();
+        marketDataIncrementalRefresh.getGroup(1, group);
+        return false;
     }
 
     @Override
