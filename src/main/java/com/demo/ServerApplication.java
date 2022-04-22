@@ -3,6 +3,7 @@ package com.demo;
 import quickfix.*;
 import quickfix.field.*;
 import quickfix.fix44.MarketDataIncrementalRefresh;
+import quickfix.fix44.MarketDataRequest;
 import quickfix.fix44.MarketDataRequestReject;
 import quickfix.fix44.MarketDataSnapshotFullRefresh;
 import quickfix.fix44.Logon;
@@ -13,6 +14,16 @@ import quickfix.fix44.Logon;
  */
 public class ServerApplication extends ApplicationAdapter {
 
+    /***
+     * Se reciben mensajes relativos a la sesión
+     * - Rechazo de mensaje mal formado
+     * @param message QuickFIX message
+     * @param sessionId QuickFIX session ID
+     * @throws FieldNotFound
+     * @throws IncorrectDataFormat
+     * @throws IncorrectTagValue
+     * @throws RejectLogon
+     */
     @Override
     public void fromAdmin(final Message message, final SessionID sessionId) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, RejectLogon {
         if (message instanceof Logon){
@@ -23,24 +34,32 @@ public class ServerApplication extends ApplicationAdapter {
         super.fromAdmin(message, sessionId);
     }
 
+    /****
+     * Se reciben mensajes de negocio,
+     * ExecutionReport, mensaje que reporta cambios de estado de una orden
+     * @param message QuickFIX message
+     * @param sessionId QuickFIX session ID
+     */
+    @Override
+    public void fromApp(final Message message, final SessionID sessionId) throws FieldNotFound {
+        MarketDataRequest marketDataRequest = (MarketDataRequest) message;
+        if(marketDataRequest.getMDUpdateType().getObject().equals(MDUpdateType.INCREMENTAL_REFRESH)){
+            System.out.println("Incremental Refresh");
+            snapshotFullRefresh(sessionId);
+        } else if (marketDataRequest.getMDUpdateType().getObject().equals(MDUpdateType.FULL_REFRESH)){
+            System.out.println("Full Refresh");
+            incrementalRefresh(sessionId);
+        }
+    }
+
     private boolean usuarioYpasswordCorrectos(final Logon logon) throws FieldNotFound {
         return logon.getUsername().getValue().equals("usuario")
                 && logon.getPassword().getValue().equals("password");
     }
 
-    @Override
-    public void fromApp(final Message message, final SessionID sessionId){
-        String mdReqId="123";
-        try {
-            Session.sendToTarget(incrementalRefresh(), sessionId);
-        }catch (SessionNotFound e){
-            rejectOrder(mdReqId,sessionId);
-        }
-    }
-
 
     //W
-    public quickfix.fix44.Message snapshotFullRefresh(){
+    public void snapshotFullRefresh(SessionID sessionID){
         MarketDataSnapshotFullRefresh marketDataSnapshotFullRefresh = new MarketDataSnapshotFullRefresh();
         String mdReqId="123";
         marketDataSnapshotFullRefresh.set(new MDReqID(mdReqId));
@@ -53,15 +72,19 @@ public class ServerApplication extends ApplicationAdapter {
         entryTypes.set(new MDEntrySize(1D));
         entryTypes.set(new QuoteCondition(QuoteCondition.NON_FIRM));
         marketDataSnapshotFullRefresh.addGroup(entryTypes);
-        return marketDataSnapshotFullRefresh;
+        try {
+            Session.sendToTarget(marketDataSnapshotFullRefresh, sessionID);
+        } catch (SessionNotFound e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    public Message incrementalRefresh(){
+    public void incrementalRefresh(SessionID sessionID){
         String mdReqId ="123";
         MarketDataIncrementalRefresh incrementalRefresh = new MarketDataIncrementalRefresh();
         incrementalRefresh.set(new MDReqID(mdReqId));
         incrementalRefresh.set(new NoMDEntries(1));
-
         MarketDataIncrementalRefresh.NoMDEntries noMDEntries = new MarketDataIncrementalRefresh.NoMDEntries();
         //279
         noMDEntries.set(new MDUpdateAction(MDUpdateAction.CHANGE));
@@ -81,7 +104,11 @@ public class ServerApplication extends ApplicationAdapter {
         //278 noMDEntries.set(new MDEntryID());
 
         incrementalRefresh.addGroup(noMDEntries);
-        return incrementalRefresh;
+        try {
+            Session.sendToTarget(incrementalRefresh,sessionID);
+        } catch (SessionNotFound e){
+            throw new RuntimeException(e);
+        }
     }
 
     private void rejectOrder(String mdReqId, SessionID sessionId) {

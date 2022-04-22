@@ -38,18 +38,20 @@ public class ClientMarketData extends ApplicationAdapter {
     public void fromApp(final Message message, final SessionID sessionId) throws FieldNotFound, IncorrectDataFormat, IncorrectTagValue, UnsupportedMessageType {
         if(message instanceof MarketDataSnapshotFullRefresh){
             MarketDataSnapshotFullRefresh marketDataSnapshotFullRefresh = (MarketDataSnapshotFullRefresh) message;
-            if(esSecurityType(marketDataSnapshotFullRefresh)){
+            this.seEjecutoOrdenCorrectamente = true;
+/*            if(esSecurityType(marketDataSnapshotFullRefresh)){
                 this.seEjecutoOrdenCorrectamente = true;
-            }
+            }*/
         } else if (message instanceof MarketDataIncrementalRefresh){
             MarketDataIncrementalRefresh marketDataIncrementalRefresh = (MarketDataIncrementalRefresh) message;
-            if(esSecurityType(marketDataIncrementalRefresh)){
+            this.seEjecutoOrdenCorrectamente = true;
+            /*if(esSecurityType(marketDataIncrementalRefresh)){
                 this.seEjecutoOrdenCorrectamente = true;
-            }
+            }*/
         }
     }
 
-    private boolean esSecurityType(final MarketDataSnapshotFullRefresh marketDataSnapshotFullRefresh) throws FieldNotFound {
+/*    private boolean esSecurityType(final MarketDataSnapshotFullRefresh marketDataSnapshotFullRefresh) throws FieldNotFound {
         return marketDataSnapshotFullRefresh.getSecurityType().getValue().equals(SecurityType.FOREIGN_EXCHANGE_CONTRACT);
     }
     private boolean esSecurityType(final MarketDataIncrementalRefresh marketDataIncrementalRefresh) throws FieldNotFound {
@@ -58,7 +60,7 @@ public class ClientMarketData extends ApplicationAdapter {
         MarketDataSnapshotFullRefresh.NoMDEntries group = new MarketDataSnapshotFullRefresh.NoMDEntries();
         marketDataIncrementalRefresh.getGroup(1, group);
         return false;
-    }
+    }*/
 
     @Override
     public void onLogon(final SessionID sessionId) {
@@ -70,6 +72,12 @@ public class ClientMarketData extends ApplicationAdapter {
         }
     }
 
+    /**
+     * Envia mensajes administrativo,
+     * mensajes que no son de negocio.
+     * @param message QuickFIX message
+     * @param sessionId QuickFIX session ID
+     */
     @Override
     public void toAdmin(final Message message, final SessionID sessionId) {
         if(message instanceof Logon) {
