@@ -1,5 +1,7 @@
 package com.demo;
 
+import com.demo.marketdata.fix.ClientMarketData;
+import com.demo.marketdata.fix.ServerApplication;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

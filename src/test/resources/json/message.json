@@ -1,0 +1,32 @@
+{
+  "msgID": 58309,
+  "msgDate": 1644874414898,
+  "msgType": "MarketMessage",
+  "marketEvent": "New",
+  "instrumentLine": 47,
+  "marketPrice": 6.990000,
+  "marketAmount": 10,
+  "amountBaseUnit": "MM",
+  "marketSide": "BID",
+  "marketRegDate": 1644874414858,
+  "instrumentInfo": {
+    "market": "Mexico",
+    "asset": "FI",
+    "product": "FI-MXN",
+    "instrumentType": "02 Bonos TF Moneda Local",
+    "instrument": "MXN Bonos M",
+    "issue": "310529",
+    "tipoValor": "NoInfo",
+    "sector": "01 Mexico",
+    "isin": "MX0MGO0000P2",
+    "commonInstID": "FI|12BM310529MXNMX0MGO0000P2",
+    "issuerId": "MX_GOV_BONDS",
+    "parValue": 100,
+    "issuer": "Bonos Mexico"
+  },
+  "tenor": "48",
+  "term": 3389,
+  "longTerm": 0,
+  "error": false,
+  "formOfOperation": "D"
+}

@@ -1,5 +1,7 @@
 package com.demo;
 
+import com.demo.marketdata.fix.ClientApplication;
+import com.demo.marketdata.fix.ServerApplication;
 import org.junit.jupiter.api.Test;
 import quickfix.ConfigError;
 import quickfix.DefaultMessageFactory;

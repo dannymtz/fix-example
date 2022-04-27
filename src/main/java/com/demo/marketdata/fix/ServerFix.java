@@ -1,4 +1,4 @@
-package com.demo.marketdata;
+package com.demo.marketdata.fix;
 
 import quickfix.*;
 import quickfix.field.MDEntryPx;

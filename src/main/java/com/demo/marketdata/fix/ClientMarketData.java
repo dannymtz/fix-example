@@ -1,4 +1,4 @@
-package com.demo;
+package com.demo.marketdata.fix;
 
 import quickfix.ApplicationAdapter;
 import quickfix.FieldNotFound;
